@@ -1,24 +1,26 @@
-type GF2_8 = u8;
+use std::ops::{Add, Div, Mul, Sub};
 
-fn gmul(a: GF2_8, b: GF2_8) -> GF2_8 {
-    let p: GF2_8 = 0;
-    let carry: GF2_8 = 0;
-    for i in 0..8 {
-        if b & 1 == 1 {
-            p ^= a;
+pub struct GF2_8(u8);
+
+pub fn gmul(a: GF2_8, b: GF2_8) -> GF2_8 {
+    let p = GF2_8(0);
+    let carry = GF2_8(0);
+    for _ in 0..8 {
+        if b.0 & 1 == 1 {
+            p.0 ^= a.0;
         }
-        carry = a & 0x80;
-        a <<= 1;
-        if carry == 0x80 {
-            a ^= 0x1b;
+        carry.0 = a.0 & 0x80;
+        a.0 <<= 1;
+        if carry.0 == 0x80 {
+            a.0 ^= 0x1b;
         }
-        b >>= 1;
+        b.0 >>= 1;
     }
 
     return p;
 }
 
-fn ginv(a: GF2_8) -> GF2_8 {
+pub fn ginv(a: GF2_8) -> GF2_8 {
     let b = a;
     for i in 0..13 {
         b = gmul(b, if 13 - i & 1 == 1 { b } else { a });
@@ -31,7 +33,7 @@ impl Add for GF2_8 {
     type Output = GF2_8;
 
     fn add(self, other: GF2_8) -> GF2_8 {
-        self ^ other
+        GF2_8(self.0 ^ other.0)
     }
 }
 
@@ -39,7 +41,7 @@ impl Sub for GF2_8 {
     type Output = GF2_8;
 
     fn sub(self, other: GF2_8) -> GF2_8 {
-        self ^ other
+        GF2_8(self.0 ^ other.0)
     }
 }
 
@@ -55,11 +57,8 @@ impl Div for GF2_8 {
     type Output = GF2_8;
 
     fn div(self, other: GF2_8) -> GF2_8 {
-        for i in 0..12 {
-            b = b * b;
-        }
+        let inv_other = ginv(other);
 
-        return b * a;
+        return gmul(self, inv_other);
     }
 }
-
