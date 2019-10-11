@@ -1,27 +1,30 @@
 use std::ops::{Add, Div, Mul, Sub};
 
-pub struct GF2_8(u8);
+#[derive(Copy, Clone)]
+pub struct GF2_8(pub u8);
 
 pub fn gmul(a: GF2_8, b: GF2_8) -> GF2_8 {
-    let p = GF2_8(0);
-    let carry = GF2_8(0);
+    let mut p = GF2_8(0);
+    let mut carry = GF2_8(0);
+    let mut _a = a;
+    let mut _b = b;
     for _ in 0..8 {
-        if b.0 & 1 == 1 {
-            p.0 ^= a.0;
+        if _b.0 & 1 == 1 {
+            p.0 ^= _a.0;
         }
-        carry.0 = a.0 & 0x80;
-        a.0 <<= 1;
+        carry.0 = _a.0 & 0x80;
+        _a.0 <<= 1;
         if carry.0 == 0x80 {
-            a.0 ^= 0x1b;
+            _a.0 ^= 0x1b;
         }
-        b.0 >>= 1;
+        _b.0 >>= 1;
     }
 
     return p;
 }
 
 pub fn ginv(a: GF2_8) -> GF2_8 {
-    let b = a;
+    let mut b = a;
     for i in 0..13 {
         b = gmul(b, if 13 - i & 1 == 1 { b } else { a });
     }
