@@ -1,5 +1,6 @@
 use crate::galoafield::GF2_8;
 use std::io::{stdout, Write};
+use std::num::ParseIntError;
 
 pub type State = [[GF2_8; 4]; 4];
 
@@ -31,6 +32,21 @@ pub fn print_state(s: &State) -> () {
         .unwrap();
     }
     write!(out, "\n").unwrap();
+}
+
+fn decode_hex(s: &str) -> Result<Vec<u8>, ParseIntError> {
+    (0..s.len())
+        .step_by(2)
+        .map(|i| u8::from_str_radix(&s[i..i + 2], 16))
+        .collect()
+}
+
+pub fn str_to_state(hex_str: String) -> Result<State, &'static str> {
+    if hex_str.len() != 32 {
+        return Err("Length must be 32")
+    }
+
+    let hex = decode_hex(&hex_str);
 }
 
 pub fn add_state(a: State, b: State) -> State {

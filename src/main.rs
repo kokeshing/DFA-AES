@@ -1,5 +1,6 @@
-mod aes;
 mod galoafield;
+mod aes;
+mod dfa;
 
 use crate::aes::*;
 use crate::galoafield::GF2_8;
