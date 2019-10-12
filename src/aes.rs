@@ -3,19 +3,34 @@ use std::io::{stdout, Write};
 
 pub type State = [[GF2_8; 4]; 4];
 
-pub fn print_state(s: &State) -> () {
+pub fn print_state_map(s: &State) -> () {
     let out = stdout();
     let mut out = out.lock();
     for i in 0..4 {
         write!(out, "{}", if i == 0 { "[" } else { " " }).unwrap();
         write!(
             out,
-            "[{:x}, {:x}, {:x}, {:x}]",
+            "[{:02X}, {:02X}, {:02X}, {:02X}]",
             s[i][0].0, s[i][1].0, s[i][2].0, s[i][3].0
         )
         .unwrap();
         write!(out, "{}", if i == 3 { "]\n" } else { "\n" }).unwrap();
     }
+}
+
+pub fn print_state(s: &State) -> () {
+    let out = stdout();
+    let mut out = out.lock();
+    write!(out, "0x").unwrap();
+    for i in 0..4 {
+        write!(
+            out,
+            "{:02X}{:02X}{:02X}{:02X}",
+            s[0][i].0, s[1][i].0, s[2][i].0, s[3][i].0
+        )
+        .unwrap();
+    }
+    write!(out, "\n").unwrap();
 }
 
 pub fn add_state(a: State, b: State) -> State {

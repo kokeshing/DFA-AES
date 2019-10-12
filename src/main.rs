@@ -30,9 +30,10 @@ fn main() {
             s = mix_column(s);
         }
 
-        round_key = set_key(w, 0);
+        round_key = set_key(w, i + 1);
         s = add_state(s, round_key);
     }
 
+    print_state(&round_key);
     print_state(&s);
 }
