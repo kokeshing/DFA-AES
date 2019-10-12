@@ -10,8 +10,8 @@ fn main() {
     let key: State = [
         [GF2_8(0), GF2_8(4), GF2_8(8), GF2_8(12)],
         [GF2_8(1), GF2_8(5), GF2_8(9), GF2_8(13)],
-        [GF2_8(2), GF2_8(6), GF2_8(0), GF2_8(14)],
-        [GF2_8(3), GF2_8(7), GF2_8(1), GF2_8(15)],
+        [GF2_8(2), GF2_8(6), GF2_8(10), GF2_8(14)],
+        [GF2_8(3), GF2_8(7), GF2_8(11), GF2_8(15)],
     ];
 
     print_state(&s);
@@ -34,6 +34,5 @@ fn main() {
         s = add_state(s, round_key);
     }
 
-    print_state(&round_key);
     print_state(&s);
 }

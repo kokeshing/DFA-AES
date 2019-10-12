@@ -10,7 +10,7 @@ pub fn print_state_map(s: &State) -> () {
         write!(out, "{}", if i == 0 { "[" } else { " " }).unwrap();
         write!(
             out,
-            "[{:02X}, {:02X}, {:02X}, {:02X}]",
+            "[{:02x}, {:02x}, {:02x}, {:02x}]",
             s[i][0].0, s[i][1].0, s[i][2].0, s[i][3].0
         )
         .unwrap();
@@ -25,7 +25,7 @@ pub fn print_state(s: &State) -> () {
     for i in 0..4 {
         write!(
             out,
-            "{:02X}{:02X}{:02X}{:02X}",
+            "{:02x}{:02x}{:02x}{:02x}",
             s[0][i].0, s[1][i].0, s[2][i].0, s[3][i].0
         )
         .unwrap();
@@ -94,7 +94,10 @@ pub fn key_expansion(k: State) -> [GF2_8; 176] {
         }
     }
 
-    let (mut t0, mut t1, mut t2, mut t3);
+    let mut t0: GF2_8;
+    let mut t1: GF2_8;
+    let mut t2: GF2_8;
+    let mut t3: GF2_8;
     for i in (16..176).step_by(4) {
         if i % 16 == 0 {
             t0 = w[i - 3];

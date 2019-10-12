@@ -4,23 +4,23 @@ use std::ops::{Add, Div, Mul, Sub};
 pub struct GF2_8(pub u8);
 
 pub fn gmul(a: GF2_8, b: GF2_8) -> GF2_8 {
-    let mut p = GF2_8(0);
-    let mut carry = GF2_8(0);
-    let mut _a = a;
-    let mut _b = b;
+    let mut p: u8 = 0;
+    let mut carry: u8;
+    let mut _a: u8 = a.0;
+    let mut _b: u8 = b.0;
     for _ in 0..8 {
-        if _b.0 & 1 == 1 {
-            p.0 ^= _a.0;
+        if _b & 1 == 1 {
+            p ^= _a;
         }
-        carry.0 = _a.0 & 0x80;
-        _a.0 <<= 1;
-        if carry.0 == 0x80 {
-            _a.0 ^= 0x1b;
+        carry = _a & 0x80;
+        _a <<= 1;
+        if carry == 0x80 {
+            _a ^= 0x1b;
         }
-        _b.0 >>= 1;
+        _b >>= 1;
     }
 
-    return p;
+    return GF2_8(p);
 }
 
 pub fn ginv(a: GF2_8) -> GF2_8 {
