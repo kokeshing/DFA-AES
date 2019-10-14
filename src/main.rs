@@ -1,39 +1,26 @@
-mod galoafield;
 mod aes;
 mod dfa;
+mod galoafield;
 
 use crate::aes::*;
 use crate::galoafield::GF2_8;
 
 fn main() {
-    let mut s: State = [[GF2_8(0); 4]; 4];
+    /*
+    let mut s: State =
+        str_to_state("00000000000000000000000000000000".to_string()).expect("Failed parse input");
+    let key: State = str_to_state("000102030405060708090a0b0c0d0e0f".to_string()).expect("Failed parse key");
+    let c = aes_encrypt(&s, &key);
+    print_state(&c);
+    */
 
-    let key: State = [
-        [GF2_8(0), GF2_8(4), GF2_8(8), GF2_8(12)],
-        [GF2_8(1), GF2_8(5), GF2_8(9), GF2_8(13)],
-        [GF2_8(2), GF2_8(6), GF2_8(10), GF2_8(14)],
-        [GF2_8(3), GF2_8(7), GF2_8(11), GF2_8(15)],
-    ];
+    let mut s: State = str_to_state("456c6b2eb68108431e20e253174f739d".to_string()).expect("");
+    let mut s_broken: State =
+        str_to_state("45266b2e168108431e20e2f4174f379d".to_string()).expect("");
 
-    print_state(&s);
-    print_state(&key);
+    s = inv_sub_byte(s);
+    s_broken = inv_sub_byte(s_broken);
 
-    let w = key_expansion(key);
-
-    let mut round_key = set_key(w, 0);
-    s = add_state(s, round_key);
-
-    for i in 0..10 {
-        s = sub_byte(s);
-        s = shift_rows(s);
-
-        if i != 9 {
-            s = mix_column(s);
-        }
-
-        round_key = set_key(w, i + 1);
-        s = add_state(s, round_key);
-    }
-
-    print_state(&s);
+    let mut diff = add_state(s, s_broken);
+    print_state_map(&diff);
 }
