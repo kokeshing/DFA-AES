@@ -1,3 +1,4 @@
+use std::cmp::{Eq, PartialEq};
 use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Copy, Clone)]
@@ -65,3 +66,10 @@ impl Div for GF2_8 {
         return gmul(self, inv_other);
     }
 }
+
+impl PartialEq for GF2_8 {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+impl Eq for GF2_8 {}
