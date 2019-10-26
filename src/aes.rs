@@ -10,7 +10,7 @@ pub fn aes_encrypt(input: &State, key: &State) -> State {
     let w = key_expansion(key);
 
     let mut round_key = set_key(w, 0);
-    s = add_state(s, round_key);
+    s = add_state(&s, &round_key);
 
     for i in 0..10 {
         s = sub_byte(s);
@@ -21,7 +21,7 @@ pub fn aes_encrypt(input: &State, key: &State) -> State {
         }
 
         round_key = set_key(w, i + 1);
-        s = add_state(s, round_key);
+        s = add_state(&s, &round_key);
     }
 
     return s;
@@ -85,7 +85,7 @@ pub fn str_to_state(hex_str: String) -> Result<State, &'static str> {
     }
 }
 
-pub fn add_state(a: State, b: State) -> State {
+pub fn add_state(a: &State, b: &State) -> State {
     let mut ret: State = [[GF2_8(0); 4]; 4];
     for i in 0..4 {
         for j in 0..4 {
