@@ -1,4 +1,5 @@
 use std::cmp::{Eq, PartialEq};
+use std::fmt;
 use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Copy, Clone)]
@@ -73,3 +74,10 @@ impl PartialEq for GF2_8 {
     }
 }
 impl Eq for GF2_8 {}
+
+impl fmt::Debug for GF2_8 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        writeln!(f, "{:02x}", self.0)?;
+        Ok(())
+    }
+}
