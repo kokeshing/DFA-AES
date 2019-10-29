@@ -2,7 +2,7 @@ use std::cmp::{Eq, PartialEq};
 use std::fmt;
 use std::ops::{Add, Div, Mul, Sub};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Hash)]
 pub struct GF2_8(pub u8);
 
 pub fn gmul(a: GF2_8, b: GF2_8) -> GF2_8 {

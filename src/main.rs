@@ -19,7 +19,7 @@ fn main() {
     let mut broken_list: Vec<State> = Vec::new();
     for i in 0..8 {
         let mut s = String::new();
-        println!("Input the {} broken ciphertext.", i);
+        println!("Input the broken ciphertexts.({})", i);
         stdin()
             .read_line(&mut s)
             .expect("Failed to read the broken ciphertext.");
@@ -35,9 +35,9 @@ fn main() {
 
     let mut y: State = [[GF2_8(0); 4]; 4];
     for i in (0..broken_list.len()).step_by(2) {
-        let mut y_list = all_y_list();
-        y_list = dfa(&ciphertext, &broken_list[i], y_list);
-        y_list = dfa(&ciphertext, &broken_list[i + 1], y_list);
+        let a = dfa(&ciphertext, &broken_list[i]);
+        let b = dfa(&ciphertext, &broken_list[i + 1]);
+        let y_list: Vec<_> = a.intersection(&b).collect();
         if y_list.len() == 1 {
             println!("{} key sucess.", i);
             for (index, j) in extract_diff_index(&ciphertext, &broken_list[i])

@@ -1,31 +1,32 @@
+use std::collections::HashSet;
 use crate::aes::*;
 use crate::galoafield::GF2_8;
 
-pub fn dfa(out: &State, broken: &State, y_list: Vec<[GF2_8; 4]>) -> Vec<[GF2_8; 4]> {
-    let mut new_y_list: Vec<[GF2_8; 4]> = Vec::new();
+pub fn dfa(out: &State, broken: &State) -> HashSet<[GF2_8; 4]> {
+    let mut y_list: HashSet<[GF2_8; 4]> = HashSet::new();
 
     let diff = extract_diff(out, broken);
     if diff.len() != 4 {
         println!("broken cyphertext is not valid");
-        return new_y_list;
+        return y_list;
     }
 
     let diff_index = extract_diff_index(out, broken);
     let [c0, c1, c2, c3] = C_LIST[diff_index[0]];
 
     for z in (0..256).map(|v| GF2_8(v as u8)) {
-        for [y0, y1, y2, y3] in y_list.iter() {
-            if diff[0] == s(*y0) + s(GF2_8(c0) * z + *y0)
-                && diff[1] == s(*y1) + s(GF2_8(c1) * z + *y1)
-                && diff[2] == s(*y2) + s(GF2_8(c2) * z + *y2)
-                && diff[3] == s(*y3) + s(GF2_8(c3) * z + *y3)
-            {
-                new_y_list.push([*y0, *y1, *y2, *y3]);
+        for y0 in (0..256).map(|v| GF2_8(v as u8)).filter(|&v| diff[0] == s(v) + s(c0 * z + v)) {
+            for y1 in (0..256).map(|v| GF2_8(v as u8)).filter(|&v| diff[1] == s(v) + s(c1 * z + v)) {
+                for y2 in (0..256).map(|v| GF2_8(v as u8)).filter(|&v| diff[2] == s(v) + s(c2 * z + v)) {
+                    for y3 in (0..256).map(|v| GF2_8(v as u8)).filter(|&v| diff[3] == s(v) + s(c3 * z + v)) {
+                        y_list.insert([y0, y1, y2, y3]);
+                    }
+                }
             }
         }
     }
 
-    return new_y_list;
+    return y_list;
 }
 
 fn extract_diff(out: &State, broken: &State) -> Vec<GF2_8> {
@@ -105,4 +106,4 @@ mod tests {
     }
 }
 
-const C_LIST: [[u8; 4]; 4] = [[2, 1, 1, 3], [3, 2, 1, 1], [1, 3, 2, 1], [1, 1, 3, 2]];
+const C_LIST: [[GF2_8; 4]; 4] = [[GF2_8(2), GF2_8(1), GF2_8(1), GF2_8(3)], [GF2_8(3), GF2_8(2), GF2_8(1), GF2_8(1)], [GF2_8(1), GF2_8(3), GF2_8(2), GF2_8(1)], [GF2_8(1), GF2_8(1), GF2_8(3), GF2_8(2)]];
