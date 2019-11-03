@@ -2,8 +2,10 @@ use crate::galoafield::GF2_8;
 use std::io::{stdout, Write};
 use std::num::ParseIntError;
 
+// StateはGF2_8の4x4の二次元配列として定義
 pub type State = [[GF2_8; 4]; 4];
 
+// AES暗号化を行う関数 平文と鍵から暗号文を返す
 pub fn aes_encrypt(input: &State, key: &State) -> State {
     let mut s = input.clone();
 
@@ -27,6 +29,7 @@ pub fn aes_encrypt(input: &State, key: &State) -> State {
     return s;
 }
 
+// Stateを見やすく出力するための関数
 pub fn print_state_map(s: &State) -> () {
     let out = stdout();
     let mut out = out.lock();
@@ -42,6 +45,7 @@ pub fn print_state_map(s: &State) -> () {
     }
 }
 
+// Stateを0xFFFFFFFFFFFFFFFFの形に変形して出力する
 pub fn print_state(s: &State) -> () {
     let out = stdout();
     let mut out = out.lock();
@@ -57,6 +61,7 @@ pub fn print_state(s: &State) -> () {
     write!(out, "\n").unwrap();
 }
 
+// 0xFFFFFFFFFFFFFFFFの文字列を8ビット整数の配列にする
 fn decode_hex(s: &str) -> Result<Vec<u8>, ParseIntError> {
     (0..s.len())
         .step_by(2)
@@ -64,6 +69,7 @@ fn decode_hex(s: &str) -> Result<Vec<u8>, ParseIntError> {
         .collect()
 }
 
+// 0xFFFFFFFFFFFFFFFFの文字列をStateに変換する
 pub fn str_to_state(hex_str: String) -> Result<State, &'static str> {
     if hex_str.len() != 32 {
         return Err("Length must be 32");
@@ -85,6 +91,7 @@ pub fn str_to_state(hex_str: String) -> Result<State, &'static str> {
     }
 }
 
+// 2つのStateを加算する
 pub fn add_state(a: &State, b: &State) -> State {
     let mut ret: State = [[GF2_8(0); 4]; 4];
     for i in 0..4 {
@@ -201,6 +208,7 @@ pub fn key_expansion(k: &State) -> [GF2_8; 176] {
     return w;
 }
 
+// key expansionで生成したwからラウンドに応じたStateを返す
 pub fn set_key(w: [GF2_8; 176], round_num: usize) -> State {
     let mut ret: State = [[GF2_8(0); 4]; 4];
     for i in 0..4 {
