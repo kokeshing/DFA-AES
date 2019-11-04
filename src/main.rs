@@ -43,7 +43,6 @@ fn main() {
         let b = dfa(&ciphertext, &broken_list[i + 1]);
         let y_list: Vec<_> = a.intersection(&b).collect(); // 2つの故障した暗号文から求めた候補から共通のものを取り出す
         if y_list.len() == 1 {
-            println!("{} key sucess.", i);
             for (index, j) in extract_diff_index(&ciphertext, &broken_list[i])
                 .iter()
                 .enumerate()
@@ -51,17 +50,19 @@ fn main() {
                 y[j / 4][j % 4] = y_list[0][index]; // 結果を格納
             }
         } else {
-            println!("y_list length is not 1. {:?}", y_list);
+            println!("y_list length is not 1 at {}", i);
         }
     }
 
     // 求めた10ラウンド目の開始時のStateの値を表示
+    println!("y:");
     print_state_map(&y);
-    print_state(&y);
 
     // 求めた10ラウンド目の開始時のStateをSubByteしてから正常な暗号文を足すことで10ラウンド目の鍵を求める
     y = sub_byte(y);
     let key = add_state(&ciphertext, &y);
+
+    println!("\nThe key of 10 round");
     print_state(&key);
     print_state_map(&key);
 }
