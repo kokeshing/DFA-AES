@@ -13,7 +13,7 @@ pub fn dfa(out: &State, broken: &State) -> HashSet<[GF2_8; 4]> {
         return y_list;
     }
 
-    // 注入されたの故障による差分zを仮定し故障箇所全てにおいて 最終的な差分 と s(y) + s(c * z + y) が一致するyの組を返す
+    // 注入されたの故障による差分zと係数の組cを仮定し故障箇所全てにおいて 最終的な差分 と s(y) + s(c * z + y) が一致するyの組を返す
     for z in (0..256).map(|v| GF2_8(v as u8)) {
         for [c0, c1, c2, c3] in C_LIST.iter() {
             for y0 in (0..256)
